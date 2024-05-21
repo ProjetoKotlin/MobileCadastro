@@ -15,4 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "MobileCadastro"
 include(":app")
- 
+include(":perfilencontrado")
