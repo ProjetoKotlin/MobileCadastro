@@ -13,6 +13,7 @@ data class DadosPessoais(
     var numero: String,
     var complemento: String
 )
+
 data class Endereco(
     var logradouro: String,
     var bairro: String,
@@ -22,7 +23,10 @@ data class Endereco(
     val erro: Boolean
 )
 
-class Database(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+
+
+class Database(context: Context) :
+    SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     companion object {
         const val DATABASE_NAME = "cadastro.db"
         const val DATABASE_VERSION = 1
@@ -40,6 +44,7 @@ class Database(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         const val COLUMN_LOCALIDADE = "localidade"
         const val COLUMN_UF = "uf"
     }
+
     override fun onCreate(db: SQLiteDatabase?) {
         val createTable = """
         CREATE TABLE $TABLE_NAME (
@@ -87,29 +92,44 @@ class Database(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null
         db.insert(TABLE_NAME, null, values)
         db.close()
     }
+
+    fun getAllUsers(): Pair<List<DadosPessoais>, List<Endereco>> {
+        val listaDadosPessoais = mutableListOf<DadosPessoais>()
+        val listaEndereco = mutableListOf<Endereco>()
+        val query = "SELECT * FROM $TABLE_NAME"
+        val db = this.readableDatabase
+        val cursor = db.rawQuery(query, null)
+
+        if (cursor.moveToFirst()) {
+            do {
+                val nome = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NOME))
+                val email = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_EMAIL))
+                val cep = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CEP))
+                val telefone = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TELEFONE))
+                val numero = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NUMERO))
+                val complemento = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_COMPLEMENTO))
+
+                // Recuperar dados de endereço
+                val logradouro = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LOGRADOURO))
+                val bairro = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_BAIRRO))
+                val localidade = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LOCALIDADE))
+                val uf = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_UF))
+                val ddd = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DDD))
+
+                val dadosPessoais = DadosPessoais(nome, email, cep, telefone, numero, complemento)
+                val endereco = Endereco(logradouro, bairro, localidade, uf, ddd, false)
+
+                listaDadosPessoais.add(dadosPessoais)
+                listaEndereco.add(endereco)
+            } while (cursor.moveToNext())
+        }
+
+        cursor.close()
+        db.close()
+
+        return Pair(listaDadosPessoais, listaEndereco)
+    }
 }
-//
-//    fun getAllUsers() : List<Task> {
-//        val tasks = mutableListOf<Task>()
-//        val query = "SELECT $COLUMN_ID, $COLUMN_TITLE, $COLUMN_DESCRIPTION FROM $TABLE_NAME"
-//        val db = this.readableDatabase
-//        val cursor = db.rawQuery(query, null)
-//
-//        if(cursor.moveToFirst()){
-//            do {
-//                val id = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ID))
-//                val title = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TITLE))
-//                val description = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DESCRIPTION))
-//                tasks.add(Task(id, title, description))
-//            } while (cursor.moveToNext())
-//        }
-//
-//        cursor.close()
-//        db.close()
-//
-//        return tasks
-//    }
-//
 //    fun updateUser(task: Task) {
 //        val db = this.writableDatabase
 //        val values = ContentValues()

@@ -16,7 +16,7 @@ fun validaNome(nome: String): String {
 }
 
 fun validaEmail(email: String): String {
-    val regex = Regex("[A-Z|a-z|0-9|\\.|_|-]+@[\\w-]+\\.[a-z]{2,}(\\.\\w+)?")
+    val regex = Regex("[A-Z|a-z|0-9|\\.|_|-]+@[\\w-]+\\.[a-z]{2,}")
     if (!regex.matches(email)){
         return "Email inválido"
     }

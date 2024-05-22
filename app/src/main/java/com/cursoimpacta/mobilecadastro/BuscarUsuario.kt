@@ -29,17 +29,19 @@ fun CampoBuscarUsuario() {
         mutableStateOf("")
     }
     Column(
-        modifier = Modifier.background(color = Color(0xFFD1E0F2)),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier.background(color = Color(0xFFD1E0F2)).width(310.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
 
     ) {
         Spacer(modifier = Modifier.height(24.dp))
-        Text(text = "Buscar usuário",fontSize = 20.sp)
-        Spacer(modifier = Modifier.height(30.dp))
+        Text(text = "Buscar usuário:", fontSize = 18.sp, modifier = Modifier
+            .align(Alignment.Start))
+        Spacer(modifier = Modifier.height(20.dp))
 
         Row {
             TextField(
                 value = entrada,
+                modifier = Modifier.width(225.dp),
                 onValueChange = { entrada = it },
                 label = { Text(text = "Digite o e-mail: ") },
                 colors = TextFieldDefaults.colors(

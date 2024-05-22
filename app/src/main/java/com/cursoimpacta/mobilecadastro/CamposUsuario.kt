@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -60,6 +61,7 @@ fun CamposUsuario() {
             .width(280.dp)
             .clip(RoundedCornerShape(8.dp))
     ) {
+        Spacer(modifier = Modifier.height(30.dp))
 
         TextField(
             value = dados.nome,
@@ -93,6 +95,7 @@ fun CamposUsuario() {
 
         Text(
             text = "Endereço:",
+            fontSize = 18.sp,
             modifier = Modifier
                 .align(Alignment.Start)
         )
@@ -127,9 +130,7 @@ fun CamposUsuario() {
                     }
 
                 }, modifier = Modifier
-                    .height(56.dp)
-                    .width(70.dp),
-                shape = RoundedCornerShape(8.dp),
+                    .height(56.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF809CBE))
             ) {
                 Text(text = "⌕", fontSize = 26.sp)
@@ -228,7 +229,7 @@ fun CamposUsuario() {
                 colors = colorWhite
             )
         }
-        Text(text = "Contato:", modifier = Modifier.align(Alignment.Start))
+        Text(text = "Contato:", modifier = Modifier.align(Alignment.Start), fontSize = 18.sp)
         Row(horizontalArrangement = Arrangement.spacedBy(20.dp)) {
             TextField(
                 value = infoCep.ddd,

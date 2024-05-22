@@ -32,13 +32,12 @@ fun Header(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
             .background(color = Color(0xFFFFFFFF))
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(74.dp),
+                .height(80.dp),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
