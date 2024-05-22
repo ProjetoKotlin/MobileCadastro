@@ -48,6 +48,7 @@ import kotlinx.coroutines.launch
 import retrofit2.Response
 import java.util.regex.Pattern
 
+
 class MainActivity : ComponentActivity() {
     private lateinit var dbHelper: Database
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,17 +61,17 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     dbHelper = Database(this)
-//                    App(dbHelper)
-                    TelaPrincipal()
+                    TelaPrincipal(dbHelper)
                 }
             }
         }
     }
 }
 
+
 @Composable
-fun TelaPrincipal() {
-    var telaCadastro by remember { mutableStateOf(true) }
+fun TelaPrincipal(db: Database) {
+    var telaCadastro by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -82,6 +83,7 @@ fun TelaPrincipal() {
         Header(telaCadastro, onMudarTela = { telaCadastro = it })
         if (telaCadastro) {
             TelaCadastro()
+
         } else {
             TelaBuscarUsuario()
         }
@@ -100,8 +102,8 @@ fun TelaBuscarUsuario() {
     PerfilEncontrado()
 }
 
-@Preview(showBackground = true)
-@Composable
-fun Teste() {
-    TelaPrincipal()
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun Teste() {
+//    TelaPrincipal()
+//}

@@ -106,7 +106,7 @@ fun CamposUsuario() {
                 }
             }, label = { Text(text = "CEP") },
                 modifier = Modifier
-                    .width(190.dp)
+                    .width(195.dp)
                     .clip(RoundedCornerShape(8.dp)),
                 colors = colorWhite,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
@@ -269,7 +269,7 @@ fun CamposUsuario() {
         }
         Button(
             onClick = {
-//                db.addUser(dados, infoCep)
+                getDados(dados, infoCep)
             },
             modifier = Modifier
                 .width(280.dp),
@@ -279,6 +279,9 @@ fun CamposUsuario() {
             Text(text = "CADASTRAR")
         }
     }
-
-
+}
+fun getDados(/*db: Database, */dados: DadosPessoais, infoCep: Endereco){
+    println(dados.nome)
+    println(infoCep.bairro)
+//    db.addUser(dados, infoCep)
 }
