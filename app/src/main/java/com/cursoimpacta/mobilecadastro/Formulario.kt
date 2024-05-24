@@ -1,6 +1,5 @@
 package com.cursoimpacta.mobilecadastro
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,23 +30,19 @@ import androidx.core.text.isDigitsOnly
 import kotlinx.coroutines.launch
 import retrofit2.Response
 
-//@SuppressLint("CoroutineCreationDuringComposition")
 @Composable
-fun CamposUsuario() {
+fun Formulario(
+    dados: DadosPessoais,
+    onDadosChange: (DadosPessoais) -> Unit,
+    infoCep: Endereco,
+    onInfoCepChange: (Endereco) -> Unit,
+) {
     val api = remember { ViaCepService.create() }
     val coroutineScope = rememberCoroutineScope()
-    var dados by remember {
-        mutableStateOf(DadosPessoais("", "", "", "9", "", ""))
-    }
-
-    var infoCep by remember {
-        mutableStateOf(Endereco("", "", "", "", "", false))
-    }
 
     var msgStatus by remember {
         mutableStateOf("")
     }
-
     val colorWhite = TextFieldDefaults.colors(
         focusedContainerColor = Color.White,
         unfocusedContainerColor = Color.White,
@@ -65,10 +60,9 @@ fun CamposUsuario() {
 
         TextField(
             value = dados.nome,
-            { dados = dados.copy(nome = it) },
+            { onDadosChange(dados.copy(nome = it)) },
             Modifier.clip(RoundedCornerShape(8.dp)),
             label = { Text(text = "Nome") },
-
             colors = colorWhite
         )
         if (dados.nome.isNotEmpty()) {
@@ -80,9 +74,8 @@ fun CamposUsuario() {
 
         TextField(
             value = dados.email,
-            onValueChange = { dados = dados.copy(email = it) },
+            onValueChange = { onDadosChange(dados.copy(email = it)) },
             label = { Text(text = "Email") },
-
             modifier = Modifier.clip(RoundedCornerShape(8.dp)),
             colors = colorWhite
         )
@@ -102,7 +95,7 @@ fun CamposUsuario() {
         Row(horizontalArrangement = Arrangement.spacedBy(20.dp)) {
             TextField(value = dados.cep, onValueChange = {
                 if (it.isDigitsOnly()) {
-                    dados = dados.copy(cep = it)
+                    onDadosChange(dados.copy(cep = it))
                 }
             }, label = { Text(text = "CEP") },
                 modifier = Modifier
@@ -120,10 +113,10 @@ fun CamposUsuario() {
                             lateinit var response: Response<Endereco>
                             response = api.procuraCep(dados.cep)
                             if (response.isSuccessful && !response.body()!!.erro) {
-                                infoCep = response.body()!!
+                                onInfoCepChange(response.body()!!)
                                 msgStatus = ""
                             } else {
-                                infoCep = Endereco("", "", "", "", "", false)
+                                onInfoCepChange(Endereco("", "", "", "", "", false))
                                 msgStatus = "CEP inválido!"
                             }
                         }
@@ -140,46 +133,31 @@ fun CamposUsuario() {
             Text(text = msgStatus)
         }
 
-
-
         TextField(
             value = infoCep.logradouro,
-            onValueChange = {
-                infoCep = infoCep.copy(logradouro = it)
-            },
-            label = {
-                Text(
-                    text = "Logradouro"
-                )
-            },
+            onValueChange = { onInfoCepChange(infoCep.copy(logradouro = it)) },
+            label = { Text(text = "Logradouro") },
             modifier = Modifier.clip(RoundedCornerShape(8.dp)),
             colors = colorWhite
         )
 
         TextField(
             value = infoCep.bairro,
-            onValueChange = { infoCep = infoCep.copy(bairro = it) },
-            label = {
-                Text(
-                    text = "Bairro"
-                )
-            },
+            onValueChange = { onInfoCepChange(infoCep.copy(bairro = it)) },
+            label = { Text(text = "Bairro") },
             modifier = Modifier.clip(RoundedCornerShape(8.dp)),
             colors = colorWhite
         )
+
         Row(horizontalArrangement = Arrangement.spacedBy(20.dp)) {
             TextField(
                 value = dados.numero,
                 onValueChange = {
                     if (it.isDigitsOnly()) {
-                        dados = dados.copy(numero = it)
+                        onDadosChange(dados.copy(numero = it))
                     }
                 },
-                label = {
-                    Text(
-                        text = "Número"
-                    )
-                },
+                label = { Text(text = "Número") },
                 modifier = Modifier
                     .width(110.dp)
                     .clip(RoundedCornerShape(8.dp)),
@@ -188,28 +166,19 @@ fun CamposUsuario() {
             )
             TextField(
                 value = dados.complemento,
-                onValueChange = { dados = dados.copy(complemento = it) },
-                label = {
-                    Text(
-                        text = "Complemento"
-                    )
-                },
+                onValueChange = { onDadosChange(dados.copy(complemento = it)) },
+                label = { Text(text = "Complemento") },
                 modifier = Modifier
                     .width(150.dp)
                     .clip(RoundedCornerShape(8.dp)),
-                colors = colorWhite,
-
-                )
+                colors = colorWhite
+            )
         }
         Row(horizontalArrangement = Arrangement.spacedBy(20.dp)) {
             TextField(
                 value = infoCep.localidade,
-                onValueChange = { infoCep = infoCep.copy(localidade = it) },
-                label = {
-                    Text(
-                        text = "Cidade"
-                    )
-                },
+                onValueChange = { onInfoCepChange(infoCep.copy(localidade = it)) },
+                label = { Text(text = "Cidade") },
                 modifier = Modifier
                     .width(150.dp)
                     .clip(RoundedCornerShape(8.dp)),
@@ -217,12 +186,8 @@ fun CamposUsuario() {
             )
             TextField(
                 value = infoCep.uf,
-                onValueChange = { infoCep = infoCep.copy(uf = it) },
-                label = {
-                    Text(
-                        text = "Estado"
-                    )
-                },
+                onValueChange = { onInfoCepChange(infoCep.copy(uf = it)) },
+                label = { Text(text = "Estado") },
                 modifier = Modifier
                     .width(110.dp)
                     .clip(RoundedCornerShape(8.dp)),
@@ -235,7 +200,7 @@ fun CamposUsuario() {
                 value = infoCep.ddd,
                 onValueChange = {
                     if (it.isDigitsOnly()) {
-                        infoCep = infoCep.copy(ddd = it)
+                        onInfoCepChange(infoCep.copy(ddd = it))
                     }
                 },
                 label = { Text(text = "DDD") },
@@ -249,7 +214,7 @@ fun CamposUsuario() {
                 value = dados.telefone,
                 onValueChange = {
                     if (it.isDigitsOnly()) {
-                        dados = dados.copy(telefone = it)
+                        onDadosChange(dados.copy(telefone = it))
                     }
                 },
                 label = { Text(text = "Telefone") },
@@ -264,24 +229,8 @@ fun CamposUsuario() {
             Text(
                 text = validaTelefone(infoCep.ddd, dados.telefone),
                 modifier = Modifier.align(Alignment.Start),
-                color = Color.Red,
+                color = Color.Red
             )
         }
-        Button(
-            onClick = {
-                getDados(dados, infoCep)
-            },
-            modifier = Modifier
-                .width(280.dp),
-            shape = RoundedCornerShape(8.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF809CBE))
-        ) {
-            Text(text = "CADASTRAR")
-        }
     }
-}
-fun getDados(/*db: Database, */dados: DadosPessoais, infoCep: Endereco){
-    println(dados.nome)
-    println(infoCep.bairro)
-//    db.addUser(dados, infoCep)
 }

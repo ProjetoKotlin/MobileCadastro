@@ -23,15 +23,12 @@ data class Endereco(
     val erro: Boolean
 )
 
-
-
 class Database(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     companion object {
         const val DATABASE_NAME = "cadastro.db"
         const val DATABASE_VERSION = 1
         const val TABLE_NAME = "DadosCadastrais"
-        const val COLUMN_ID = "id"
         const val COLUMN_NOME = "nome"
         const val COLUMN_EMAIL = "email"
         const val COLUMN_DDD = "ddd"
@@ -48,8 +45,7 @@ class Database(context: Context) :
     override fun onCreate(db: SQLiteDatabase?) {
         val createTable = """
         CREATE TABLE $TABLE_NAME (
-            $COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT,
-            $COLUMN_NOME TEXT,
+            $COLUMN_NOME TEXT PRIMARY KEY,
             $COLUMN_EMAIL TEXT,
             $COLUMN_DDD TEXT,
             $COLUMN_TELEFONE TEXT,
@@ -70,17 +66,17 @@ class Database(context: Context) :
         onCreate(db)
     }
 
-    fun addUser(dadosPessoais: DadosPessoais, endereco: Endereco) {
+    fun addUser(dados: DadosPessoais, endereco: Endereco) {
         val db = this.writableDatabase
         val values = ContentValues()
 
         // Dados Pessoais
-        values.put(COLUMN_NOME, dadosPessoais.nome)
-        values.put(COLUMN_EMAIL, dadosPessoais.email)
-        values.put(COLUMN_CEP, dadosPessoais.cep)
-        values.put(COLUMN_NUMERO, dadosPessoais.numero)
-        values.put(COLUMN_COMPLEMENTO, dadosPessoais.complemento)
-        values.put(COLUMN_TELEFONE, dadosPessoais.telefone)
+        values.put(COLUMN_NOME, dados.nome)
+        values.put(COLUMN_EMAIL, dados.email)
+        values.put(COLUMN_CEP, dados.cep)
+        values.put(COLUMN_NUMERO, dados.numero)
+        values.put(COLUMN_COMPLEMENTO, dados.complemento)
+        values.put(COLUMN_TELEFONE, dados.telefone)
 
         // Endereço
         values.put(COLUMN_LOGRADOURO, endereco.logradouro)
@@ -93,58 +89,74 @@ class Database(context: Context) :
         db.close()
     }
 
-    fun getAllUsers(): Pair<List<DadosPessoais>, List<Endereco>> {
-        val listaDadosPessoais = mutableListOf<DadosPessoais>()
-        val listaEndereco = mutableListOf<Endereco>()
-        val query = "SELECT * FROM $TABLE_NAME"
+    fun getUserByName(nome: String): Pair<DadosPessoais, Endereco> {
+        val dados = DadosPessoais("", "", "", "", "", "")
+        val endereco = Endereco("", "", "", "", "", false)
+
+        val query = "SELECT * FROM $TABLE_NAME WHERE $COLUMN_NOME = ?"
         val db = this.readableDatabase
-        val cursor = db.rawQuery(query, null)
+        val cursor = db.rawQuery(query, arrayOf(nome))
 
         if (cursor.moveToFirst()) {
-            do {
-                val nome = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NOME))
-                val email = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_EMAIL))
-                val cep = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CEP))
-                val telefone = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TELEFONE))
-                val numero = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NUMERO))
-                val complemento = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_COMPLEMENTO))
+            val email = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_EMAIL)) ?: ""
+            val cep = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CEP)) ?: ""
+            val telefone = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TELEFONE)) ?: ""
+            val numero = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NUMERO)) ?: ""
+            val complemento =
+                cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_COMPLEMENTO)) ?: ""
 
-                // Recuperar dados de endereço
-                val logradouro = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LOGRADOURO))
-                val bairro = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_BAIRRO))
-                val localidade = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LOCALIDADE))
-                val uf = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_UF))
-                val ddd = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DDD))
+            val logradouro = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LOGRADOURO)) ?: ""
+            val bairro = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_BAIRRO)) ?: ""
+            val localidade = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LOCALIDADE)) ?: ""
+            val uf = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_UF)) ?: ""
+            val ddd = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DDD)) ?: ""
 
-                val dadosPessoais = DadosPessoais(nome, email, cep, telefone, numero, complemento)
-                val endereco = Endereco(logradouro, bairro, localidade, uf, ddd, false)
+            val dadosPessoais = DadosPessoais(nome, email, cep, telefone, numero, complemento)
+            val enderecoCompleto = Endereco(logradouro, bairro, localidade, uf, ddd, false)
 
-                listaDadosPessoais.add(dadosPessoais)
-                listaEndereco.add(endereco)
-            } while (cursor.moveToNext())
+            cursor.close()
+            db.close()
+            return Pair(dadosPessoais, enderecoCompleto)
         }
 
         cursor.close()
         db.close()
+        dados.nome = "Não encontrado"
+        return Pair(dados, endereco)
+    }
 
-        return Pair(listaDadosPessoais, listaEndereco)
+
+    fun updateUser(dados: DadosPessoais, endereco: Endereco) {
+        val db = this.writableDatabase
+        val values = ContentValues().apply {
+            put(COLUMN_NOME, dados.nome)
+            put(COLUMN_EMAIL, dados.email)
+            put(COLUMN_DDD, endereco.ddd)
+            put(COLUMN_TELEFONE, dados.telefone)
+            put(COLUMN_CEP, dados.cep)
+            put(COLUMN_LOGRADOURO, endereco.logradouro)
+            put(COLUMN_BAIRRO, endereco.bairro)
+            put(COLUMN_NUMERO, dados.numero)
+            put(COLUMN_COMPLEMENTO, dados.complemento)
+            put(COLUMN_LOCALIDADE, endereco.localidade)
+            put(COLUMN_UF, endereco.uf)
+        }
+
+        db.update(
+            TABLE_NAME,
+            values,
+            "$COLUMN_NOME=?",
+            arrayOf(dados.nome)
+        )
+
+        db.close()
+    }
+
+    fun deleteUser(nome: String) {
+        val db = this.writableDatabase
+        db.delete(
+            TABLE_NAME, "$COLUMN_NOME=?", arrayOf(nome)
+        )
+        db.close()
     }
 }
-//    fun updateUser(task: Task) {
-//        val db = this.writableDatabase
-//        val values = ContentValues()
-//        values.put(COLUMN_TITLE, task.title)
-//        values.put(COLUMN_DESCRIPTION, task.descripton)
-//
-//        db.update(TABLE_NAME, values, "$COLUMN_ID=?"
-//            , arrayOf((task.id.toString())))
-//
-//        db.close()
-//    }
-//
-//    fun deleteUser(taskId: Long) {
-//        val db = this.writableDatabase
-//        db.delete(TABLE_NAME, "$COLUMN_ID=?"
-//            , arrayOf(taskId.toString()))
-//        db.close()
-//    }
