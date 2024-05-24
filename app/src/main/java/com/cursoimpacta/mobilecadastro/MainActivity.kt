@@ -94,7 +94,7 @@ fun TelaCadastro(db: Database) {
     Button(
         onClick = {
             db.addUser(dados, infoCep)
-            dados = DadosPessoais("","","","","","")
+            dados = DadosPessoais("","","","9","","")
             infoCep = Endereco("", "", "", "", "", false)
             btnCadastrarClicked = true
         },
