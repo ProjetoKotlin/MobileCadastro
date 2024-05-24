@@ -56,8 +56,6 @@ fun Formulario(
             .width(280.dp)
             .clip(RoundedCornerShape(8.dp))
     ) {
-        Spacer(modifier = Modifier.height(30.dp))
-
         TextField(
             value = dados.nome,
             { onDadosChange(dados.copy(nome = it)) },
@@ -124,6 +122,7 @@ fun Formulario(
 
                 }, modifier = Modifier
                     .height(56.dp),
+                shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF809CBE))
             ) {
                 Text(text = "⌕", fontSize = 26.sp)
@@ -225,12 +224,13 @@ fun Formulario(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
         }
-        if (dados.telefone.isNotEmpty()) {
+        if (infoCep.ddd.isNotEmpty() || dados.telefone != "9") {
             Text(
                 text = validaTelefone(infoCep.ddd, dados.telefone),
                 modifier = Modifier.align(Alignment.Start),
                 color = Color.Red
             )
         }
+        Spacer(Modifier.height(12.dp))
     }
 }

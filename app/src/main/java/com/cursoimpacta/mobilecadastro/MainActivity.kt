@@ -28,7 +28,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.cursoimpacta.mobilecadastro.ui.theme.MobileCadastroTheme
@@ -79,9 +78,14 @@ fun TelaPrincipal(db: Database) {
 @Composable
 fun TelaCadastro(db: Database) {
     var dados by remember {
-        mutableStateOf(DadosPessoais("", "", "", "", "", ""))
+        mutableStateOf(DadosPessoais("", "", "", "9", "", ""))
+    }
+    var btnCadastrarClicked by remember {
+        mutableStateOf(false)
     }
     var infoCep by remember { mutableStateOf(Endereco("", "", "", "", "", false)) }
+
+    Spacer(modifier = Modifier.height(30.dp))
     Formulario(dados = dados,
         onDadosChange = { dados = it },
         infoCep = infoCep,
@@ -90,6 +94,9 @@ fun TelaCadastro(db: Database) {
     Button(
         onClick = {
             db.addUser(dados, infoCep)
+            dados = DadosPessoais("","","","","","")
+            infoCep = Endereco("", "", "", "", "", false)
+            btnCadastrarClicked = true
         },
         modifier = Modifier
             .width(280.dp),
@@ -98,14 +105,22 @@ fun TelaCadastro(db: Database) {
     ) {
         Text(text = "CADASTRAR")
     }
+    if (btnCadastrarClicked){
+        Spacer(modifier = Modifier.height(20.dp))
+        Text(text = "Dados cadastrados com sucesso!")
+    }
+    Spacer(modifier = Modifier.height(24.dp))
 }
 
 @Composable
 fun TelaBuscarUsuario(db: Database) {
-    var dados by remember { mutableStateOf(DadosPessoais("", "", "", "", "", "")) }
+    var dados by remember { mutableStateOf(DadosPessoais("", "", "", "9", "", "")) }
     var infoCep by remember { mutableStateOf(Endereco("", "", "", "", "", false)) }
     var entrada by remember {
         mutableStateOf("")
+    }
+    var btnBuscarClicked by remember {
+        mutableStateOf(false)
     }
 
     Column(
@@ -138,60 +153,65 @@ fun TelaBuscarUsuario(db: Database) {
             Spacer(modifier = Modifier.width(20.dp))
             Button(
                 onClick = {
-                    var (dadosResp, infoCepResp) = db.getUserByName(entrada)
+                    val (dadosResp, infoCepResp) = db.getUserByName(entrada)
                     dados = dadosResp
                     infoCep = infoCepResp
+                    btnBuscarClicked = true
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF809CBE)),
-                modifier = Modifier.height(56.dp)
+                modifier = Modifier.height(56.dp),
+                shape = RoundedCornerShape(8.dp)
             ) {
                 Text(text = "⌕", fontSize = 26.sp)
             }
         }
     }
+    Spacer(modifier = Modifier.height(30.dp))
+    if (btnBuscarClicked) {
+        if (dados.nome != "Não encontrado") {
+            var btnAlterarClicked by remember {
+                mutableStateOf(false)
+            }
+            var btnDeletarClicked by remember {
+                mutableStateOf(false)
+            }
 
-    if (dados.nome != "Não encontrado") {
-        var btnAlterarClicked by remember {
-            mutableStateOf(false)
-        }
-        var btnDeletarClicked by remember {
-            mutableStateOf(false)
-        }
-
-        PerfilEncontrado(
-            btnAlterarClicked,
-            { btnAlterarClicked = it },
-            btnDeletarClicked,
-            { btnDeletarClicked = it }
-        )
-        if (btnDeletarClicked) {
-            db.deleteUser(entrada)
-            Text(text = "Dados deletados com sucesso!")
-        } else {
-            if (!btnAlterarClicked) {
-                ExibirDados(dados, infoCep)
+            PerfilEncontrado(
+                { btnAlterarClicked = it },
+                { btnDeletarClicked = it }
+            )
+            Spacer(modifier = Modifier.height(20.dp))
+            if (btnDeletarClicked) {
+                db.deleteUser(entrada)
+                Text(text = "Dados deletados com sucesso!")
             } else {
-                Formulario(
-                    dados = dados,
-                    onDadosChange = { dados = it },
-                    infoCep = infoCep,
-                    onInfoCepChange = { infoCep = it })
+                if (!btnAlterarClicked) {
+                    ExibirDados(dados, infoCep)
+                } else {
+                    Formulario(
+                        dados = dados,
+                        onDadosChange = { dados = it },
+                        infoCep = infoCep,
+                        onInfoCepChange = { infoCep = it })
 
-                Button(
-                    onClick = {
-                        db.updateUser(dados, infoCep)
-                    },
-                    modifier = Modifier
-                        .width(280.dp),
-                    shape = RoundedCornerShape(8.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF809CBE))
-                ) {
-                    Text(text = "SALVAR")
+                    Button(
+                        onClick = {
+                            db.updateUser(dados, infoCep)
+                            btnBuscarClicked = false
+                        },
+                        modifier = Modifier
+                            .width(280.dp),
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF809CBE))
+                    ) {
+                        Text(text = "SALVAR")
+                    }
+                    Spacer(modifier = Modifier.height(24.dp))
                 }
             }
+        } else {
+            Text(text = "Usuário não encontrado!")
         }
-    } else {
-        Text(text = "Usuário não encontrado!")
     }
 }
 
@@ -212,6 +232,6 @@ fun ExibirDados(dados: DadosPessoais, endereco: Endereco) {
         DDD: ${endereco.ddd}
     """.trimIndent()
 
-    Text(text = dadosTexto)
+    Text(text = dadosTexto, modifier = Modifier.width(310.dp))
 }
 
