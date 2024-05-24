@@ -1,5 +1,6 @@
 package com.cursoimpacta.mobilecadastro
 
+import android.graphics.Paint.Style
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
