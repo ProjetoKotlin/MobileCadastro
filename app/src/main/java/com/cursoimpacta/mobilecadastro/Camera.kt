@@ -14,16 +14,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.Button
-import androidx.compose.material.Text
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import java.io.IOException
@@ -54,12 +57,16 @@ fun Camera(onBitmapValor: (Bitmap?) -> Unit) {
         }
     }
 
-    Column(modifier = Modifier.padding(16.dp)) {
-        Button(onClick = { cameraLauncher.launch(null) }) {
+    Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Button(onClick = { cameraLauncher.launch(null) },
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF809CBE))) {
             Text("Capture Image")
         }
         Spacer(modifier = Modifier.height(8.dp))
-        Button(onClick = { galleryLauncher.launch("image/*") }) {
+        Button(onClick = { galleryLauncher.launch("image/*") },
+            shape = RoundedCornerShape(8.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF809CBE))) {
             Text("Select from Gallery")
         }
         Spacer(modifier = Modifier.height(16.dp))
