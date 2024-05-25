@@ -76,7 +76,6 @@ fun Camera(onBitmapValor: (Bitmap?) -> Unit) {
                     contentDescription = "Captured image",
                     modifier = Modifier
                         .size(300.dp),
-//                    contentScale = ContentScale.FillWidth
                 )
             }
             Spacer(modifier = Modifier.height(20.dp))

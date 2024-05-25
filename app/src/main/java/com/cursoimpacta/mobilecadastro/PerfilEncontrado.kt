@@ -73,7 +73,7 @@ fun PerfilEncontrado(
 @Composable
 /*
 Nessa função estamos tratando para que o texto e a 
-imagem fiquem juntas, aliadas e dinamica,  fazendo assim uma função so responsavél por
+imagem fiquem juntas, aliadas e dinâmica, fazendo assim uma função responsável só por
 tratar da inclusão dos textos e imagem
 */
 fun TextWithImage(text: String, imagePainter: Painter) {
