@@ -111,8 +111,10 @@ class Database(context: Context) :
             val uf = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_UF)) ?: ""
             val ddd = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_DDD)) ?: ""
 
+
             val dadosPessoais = DadosPessoais(nome, email, cep, telefone, numero, complemento)
             val enderecoCompleto = Endereco(logradouro, bairro, localidade, uf, ddd, false)
+
 
             cursor.close()
             db.close()

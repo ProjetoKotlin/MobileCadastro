@@ -33,8 +33,8 @@ import retrofit2.Response
 @Composable
 fun Formulario(
     /*
-    foram criados essa variavél interação dos dados entre as telas, 
-    por se tratar de componente precisariamos que os dados fosse dinamicos e 
+    foram criados essa variavél interação dos dados entre as telas,
+    por se tratar de componente precisariamos que os dados fosse dinamicos e
     exibir somente quando forem  realizado ações de editar
     */
     dados: DadosPessoais,
@@ -54,6 +54,7 @@ fun Formulario(
         disabledContainerColor = Color.White,
     )
 
+
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(20.dp),
@@ -69,10 +70,17 @@ fun Formulario(
             colors = colorWhite
         )
 
-        // Nesse campo estamos verificando se dados.nome não está vazio, assim também feito no campo de email
-        if (dados.nome.isNotEmpty()) {
+        var msgNome by remember {
+            mutableStateOf("")
+        }
+
+        msgNome = validaNome(dados.nome)
+
+        // Nessa condição estamos verificando se a mensagem retornada pela validação do nome é diferente
+        // de correto e o dados.nome não é vazia, para poder mostrar o erro de validação
+        if (msgNome != "Correto" && dados.nome.isNotEmpty()) {
             Text(
-                text = validaNome(dados.nome), color = Color.Red, modifier = Modifier
+                text = msgNome, color = Color.Red, modifier = Modifier
                     .align(Alignment.Start)
             )
         }
@@ -84,9 +92,18 @@ fun Formulario(
             modifier = Modifier.clip(RoundedCornerShape(8.dp)),
             colors = colorWhite
         )
-        if (dados.email.isNotEmpty()) {
+
+        var msgEmail by remember {
+            mutableStateOf("")
+        }
+
+        msgEmail = validaEmail(dados.email)
+
+        // Nessa condição estamos verificando se a mensagem retornada pela validação do email é diferente
+        // de Correto e o dados.email não é vazia, para poder mostrar o erro de validação
+        if (msgEmail != "Correto" && dados.email.isNotEmpty()) {
             Text(
-                text = validaEmail(dados.email), color = Color.Red, modifier = Modifier
+                text = msgEmail, color = Color.Red, modifier = Modifier
                     .align(Alignment.Start)
             )
         }
@@ -231,6 +248,7 @@ fun Formulario(
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
         }
+
         if (infoCep.ddd.isNotEmpty() || dados.telefone != "9") {
             Text(
                 text = validaTelefone(infoCep.ddd, dados.telefone),

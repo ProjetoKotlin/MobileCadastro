@@ -9,7 +9,7 @@ fun validaNome(nome: String): String {
                 return "Cada nome deve conter no mínimo 3 letras cada!"
             }
         }
-        return ""
+        return "Correto"
     } else {
         return "O nome precisa de no mínimo 2 palavras!"
     }
@@ -20,7 +20,7 @@ fun validaEmail(email: String): String {
     if (!regex.matches(email)){
         return "Email inválido"
     }
-    return ""
+    return "Correto"
 
 }
 
