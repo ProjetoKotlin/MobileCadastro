@@ -153,10 +153,11 @@ fun TelaBuscarUsuario(db: Database) {
             Spacer(modifier = Modifier.width(20.dp))
             Button(
                 onClick = {
-                    val (dadosResp, infoCepResp) = db.getUserByName(entrada)
-                    dados = dadosResp
-                    infoCep = infoCepResp
-                    btnBuscarClicked = true
+//                    val (dadosResp, infoCepResp) = db.getUserByName(entrada)
+//                    dados = dadosResp
+//                    infoCep = infoCepResp
+//                    btnBuscarClicked = true
+                    main()
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF809CBE)),
                 modifier = Modifier.height(56.dp),
