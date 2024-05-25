@@ -47,7 +47,7 @@ fun PerfilEncontrado(
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
             ) {
-                TextWithImage(
+                TextWithImage( // inclusão de imagem de editar
                     text = "Alterar",
                     imagePainter = painterResource(id = R.drawable.ic_edit)
                 )
@@ -57,7 +57,7 @@ fun PerfilEncontrado(
                 onClick = { onDeletarClicked(true) },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent)
             ) {
-                TextWithImage(
+                TextWithImage( // inclusão de imagem de excluir
                     text = "Excluir",
                     imagePainter = painterResource(id = R.drawable.ic_delete)
                 )
@@ -71,6 +71,11 @@ fun PerfilEncontrado(
 }
 
 @Composable
+/*
+Nessa função estamos tratando para que o texto e a 
+imagem fiquem juntas, aliadas e dinamica,  fazendo assim uma função so responsavél por
+tratar da inclusão dos textos e imagem
+*/
 fun TextWithImage(text: String, imagePainter: Painter) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Image(
