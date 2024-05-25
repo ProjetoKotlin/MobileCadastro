@@ -231,6 +231,7 @@ fun TelaBuscarUsuario(db: Database, imageBitmap: Bitmap?, onBitmapCaptured: (Bit
                             contentScale = ContentScale.FillWidth
                         )
                     }
+                    Spacer(modifier = Modifier.height(30.dp))
                     ExibirDados(dados, infoCep)
                 } else {
                     Camera(onBitmapValor = { bitmap ->

@@ -73,6 +73,7 @@ fun Camera(onBitmapValor: (Bitmap?) -> Unit) {
 //                    contentScale = ContentScale.FillWidth
                 )
             }
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }
