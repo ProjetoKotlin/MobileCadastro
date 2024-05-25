@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -226,8 +227,7 @@ fun TelaBuscarUsuario(db: Database, imageBitmap: Bitmap?, onBitmapCaptured: (Bit
                             bitmap = bitmap.asImageBitmap(),
                             contentDescription = "Captured image",
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .height(200.dp),  // Ajuste a altura conforme necessário
+                                .size(300.dp),  // Ajuste a altura conforme necessário
                             contentScale = ContentScale.FillWidth
                         )
                     }
