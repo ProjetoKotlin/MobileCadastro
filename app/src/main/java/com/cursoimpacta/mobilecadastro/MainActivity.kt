@@ -76,7 +76,7 @@ fun TelaPrincipal(db: Database) {
         //exibição do menu exibindo as duas opçãoes de clique a tela cadastro ou tela de buscarUsuario, as duas recebe db
         Header(telaCadastro, onMudarTela = { telaCadastro = it })
         if (telaCadastro) {
-            TelaCadastro(db, imageBitmap, onBitmapCaptured)
+            TelaCadastro(db, onBitmapCaptured)
 
         } else {
             TelaBuscarUsuario(db, imageBitmap, onBitmapCaptured)
@@ -86,7 +86,7 @@ fun TelaPrincipal(db: Database) {
 
 
 @Composable
-fun TelaCadastro(db: Database, imageBitmap: Bitmap?, onBitmapCaptured: (Bitmap?) -> Unit) {
+fun TelaCadastro(db: Database, onBitmapCaptured: (Bitmap?) -> Unit) {
     var dados by remember {
         mutableStateOf(DadosPessoais("", "", "", "9", "", ""))
     }
@@ -94,8 +94,6 @@ fun TelaCadastro(db: Database, imageBitmap: Bitmap?, onBitmapCaptured: (Bitmap?)
         mutableStateOf(false)
     }
     var infoCep by remember { mutableStateOf(Endereco("", "", "", "", "", false)) }
-
-    var imageBitmap by remember { mutableStateOf<Bitmap?>(null) }
 
     Spacer(modifier = Modifier.height(30.dp))
 
