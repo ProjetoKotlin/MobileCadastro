@@ -35,12 +35,12 @@ import com.cursoimpacta.mobilecadastro.ui.theme.MobileCadastroTheme
 
 
 class MainActivity : ComponentActivity() {
+    // dbHelper usada para interagir com o banco de dados.
     private lateinit var dbHelper: Database
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MobileCadastroTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -53,7 +53,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-
+// componente que eserá inicializado primeiro é a telaCadastro com os formularios a serem preenchido 
 @Composable
 fun TelaPrincipal(db: Database) {
     var telaCadastro by remember { mutableStateOf(true) }
@@ -65,6 +65,7 @@ fun TelaPrincipal(db: Database) {
         horizontalAlignment = Alignment.CenterHorizontally,
 
         ) {
+        //exibição do menu exibindo as duas opçãoes de clique a tela cadastro ou tela de buscarUsuario, as duas recebe db
         Header(telaCadastro, onMudarTela = { telaCadastro = it })
         if (telaCadastro) {
             TelaCadastro(db)
@@ -91,7 +92,11 @@ fun TelaCadastro(db: Database) {
         onDadosChange = { dados = it },
         infoCep = infoCep,
         onInfoCepChange = { infoCep = it })
-
+    /*
+     botõao exibido ele adicona os dados que foi gerado e após os dados
+     salvos os campos recebe uma string vazia, para limpar os campos
+     e permitindo assim o preenchimento de novas informações. 
+    */
     Button(
         onClick = {
             db.addUser(dados, infoCep)
@@ -106,6 +111,8 @@ fun TelaCadastro(db: Database) {
     ) {
         Text(text = "CADASTRAR")
     }
+
+    // mensagem de sucesso em caso de cadastro realizado com sucesso
     if (btnCadastrarClicked){
         Spacer(modifier = Modifier.height(20.dp))
         Text(text = "Dados cadastrados com sucesso!")
@@ -168,6 +175,18 @@ fun TelaBuscarUsuario(db: Database) {
         }
     }
     Spacer(modifier = Modifier.height(30.dp))
+
+    /*
+         Em caso da procura de um nome que não foi cadastrado na base e do banco de dados. 
+         Criamos essa função que resgata o retorno do banco de dados informando com a tratativa de mensagem "Não encontrado". 
+         Ela evita disparo da  tela completa do perfil do usuario, e exibindo assim a mensagem de não encontrato 
+         e o campo de busca para tentar novamente buscar informação com outro nome
+         
+         Caso ao contrario ele entra no if e exibe o perfil do usuario com o dados que foram 
+         pesquisado no campo de busca, dessa forma ele será possivél editar ou deletar
+         o dados quando quiser.
+    */
+    
     if (btnBuscarClicked) {
         if (dados.nome != "Não encontrado") {
             var btnAlterarClicked by remember {
@@ -216,6 +235,7 @@ fun TelaBuscarUsuario(db: Database) {
     }
 }
 
+// função para somente exibir os dados como texto na tela de perfil do usuario
 @Composable
 fun ExibirDados(dados: DadosPessoais, endereco: Endereco) {
     val dadosTexto = """
