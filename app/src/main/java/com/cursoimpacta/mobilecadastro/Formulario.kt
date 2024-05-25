@@ -32,6 +32,11 @@ import retrofit2.Response
 
 @Composable
 fun Formulario(
+    /*
+    foram criados essa variavél interação dos dados entre as telas, 
+    por se tratar de componente precisariamos que os dados fosse dinamicos e 
+    exibir somente quando forem  realizado ações de editar
+    */
     dados: DadosPessoais,
     onDadosChange: (DadosPessoais) -> Unit,
     infoCep: Endereco,
@@ -63,6 +68,8 @@ fun Formulario(
             label = { Text(text = "Nome") },
             colors = colorWhite
         )
+
+        // Nesse campo estamos verificando se dados.nome não está vazio, assim também feito no campo de email
         if (dados.nome.isNotEmpty()) {
             Text(
                 text = validaNome(dados.nome), color = Color.Red, modifier = Modifier
