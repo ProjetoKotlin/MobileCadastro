@@ -1,6 +1,6 @@
 package com.cursoimpacta.mobilecadastro
 
-
+// função tem como proposta validar se o nome tem o tamaho maior que dois de palavras e se possui mais de 3 letras
 fun validaNome(nome: String): String {
     val lista = nome.split(" ")
     if (lista.size >= 2) {
@@ -16,7 +16,7 @@ fun validaNome(nome: String): String {
 }
 
 fun validaEmail(email: String): String {
-    val regex = Regex("[A-Z|a-z|0-9|\\.|_|-]+@[\\w-]+\\.[a-z]{2,}")
+    val regex = Regex("[A-Z|a-z|0-9|\\.|_|-]+@[\\w-]+\\.[a-z]{2,}") // limitações das caracteriscas aceitas no momento da escita do e-mail
     if (!regex.matches(email)){
         return "Email inválido"
     }
