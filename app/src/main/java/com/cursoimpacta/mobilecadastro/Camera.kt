@@ -71,18 +71,8 @@ fun Camera(onBitmapValor: (Bitmap?) -> Unit) {
             Text("Select from Gallery")
         }
         Spacer(modifier = Modifier.height(16.dp))
-        // Aqui exibe a imagem selecionada
-        if (imageBitmap != null) {
-            imageBitmap?.let { bitmap ->
-                Image(
-                    bitmap = bitmap.asImageBitmap(),
-                    contentDescription = "Captured image",
-                    modifier = Modifier
-                        .size(300.dp),
-                )
-            }
-            Spacer(modifier = Modifier.height(20.dp))
-        }
+
+
     }
 }
 

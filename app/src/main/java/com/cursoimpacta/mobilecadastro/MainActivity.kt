@@ -93,13 +93,27 @@ fun TelaCadastro(db: Database, onBitmapCaptured: (Bitmap?) -> Unit) {
     var btnCadastrarClicked by remember {
         mutableStateOf(false)
     }
+    var imageBitmap by remember { mutableStateOf<Bitmap?>(null) }
     var infoCep by remember { mutableStateOf(Endereco("", "", "", "", "", false)) }
 
     Spacer(modifier = Modifier.height(30.dp))
 
     Camera(onBitmapValor = { bitmap ->
         onBitmapCaptured(bitmap) // Chama a função callback para passar o bitmap capturado
+        imageBitmap = bitmap // Atualiza a imagemBitmap localmente
     })
+
+    if (imageBitmap != null) {
+        imageBitmap?.let { bitmap ->
+            Image(
+                bitmap = bitmap.asImageBitmap(),
+                contentDescription = "Captured image",
+                modifier = Modifier
+                    .size(300.dp),
+            )
+        }
+        Spacer(modifier = Modifier.height(20.dp))
+    }
     Formulario(dados = dados,
         onDadosChange = { dados = it },
         infoCep = infoCep,
@@ -107,13 +121,15 @@ fun TelaCadastro(db: Database, onBitmapCaptured: (Bitmap?) -> Unit) {
     /*
      botõao exibido ele adicona os dados que foi gerado e após os dados
      salvos os campos recebe uma string vazia, para limpar os campos
-     e permitindo assim o preenchimento de novas informações. 
+     e permitindo assim o preenchimento de novas informações.
     */
     Button(
         onClick = {
             db.addUser(dados, infoCep)
             dados = DadosPessoais("","","","9","","")
             infoCep = Endereco("", "", "", "", "", false)
+            onBitmapCaptured(null)
+            imageBitmap = null
             btnCadastrarClicked = true
         },
         modifier = Modifier

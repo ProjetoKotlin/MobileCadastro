@@ -108,8 +108,7 @@ class Database(context: Context) :
             val cep = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CEP)) ?: ""
             val telefone = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TELEFONE)) ?: ""
             val numero = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NUMERO)) ?: ""
-            val complemento =
-                cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_COMPLEMENTO)) ?: ""
+            val complemento = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_COMPLEMENTO)) ?: ""
 
             val logradouro = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LOGRADOURO)) ?: ""
             val bairro = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_BAIRRO)) ?: ""
