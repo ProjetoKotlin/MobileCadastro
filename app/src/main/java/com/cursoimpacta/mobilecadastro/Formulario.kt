@@ -33,9 +33,9 @@ import retrofit2.Response
 @Composable
 fun Formulario(
     /*
-    foram criados essa variavél interação dos dados entre as telas,
-    por se tratar de componente precisariamos que os dados fosse dinamicos e
-    exibir somente quando forem  realizado ações de editar
+    Foram criadas essas variáveis para interação dos dados entre as telas.
+    Por se tratar de componentes precisávamos que os dados fossem dinâmicos e
+    que fossem exibidos somente quando fossem realizadas ações de editar.
     */
     dados: DadosPessoais,
     onDadosChange: (DadosPessoais) -> Unit,
@@ -77,7 +77,7 @@ fun Formulario(
         msgNome = validaNome(dados.nome)
 
         // Nessa condição estamos verificando se a mensagem retornada pela validação do nome é diferente
-        // de correto e o dados.nome não é vazia, para poder mostrar o erro de validação
+        // de correto e o dados.nome não é vazio, para poder mostrar o erro de validação e não ficar um espaço vazio
         if (msgNome != "Correto" && dados.nome.isNotEmpty()) {
             Text(
                 text = msgNome, color = Color.Red, modifier = Modifier
@@ -100,7 +100,7 @@ fun Formulario(
         msgEmail = validaEmail(dados.email)
 
         // Nessa condição estamos verificando se a mensagem retornada pela validação do email é diferente
-        // de Correto e o dados.email não é vazia, para poder mostrar o erro de validação
+        // de Correto e o dados.email não é vazia, para poder mostrar o erro de validação e não ficar um espaço vazio
         if (msgEmail != "Correto" && dados.email.isNotEmpty()) {
             Text(
                 text = msgEmail, color = Color.Red, modifier = Modifier
@@ -129,6 +129,7 @@ fun Formulario(
 
             Button(
                 onClick = {
+                    // Realiza a requisição do VIACEP e preenche automaticamente os campos de endereço
                     if (dados.cep.length == 8) {
                         coroutineScope.launch {
                             msgStatus = "Aguarde..."
@@ -249,6 +250,8 @@ fun Formulario(
             )
         }
 
+        // Nessa condição estamos verificando se o ddd não é vazio e se o telefone é diferente de 9,
+        // que é o padrão inicial, para poder mostrar o erro de validação apenas quando a pessoa digitar alguma coisa
         if (infoCep.ddd.isNotEmpty() || dados.telefone != "9") {
             Text(
                 text = validaTelefone(infoCep.ddd, dados.telefone),

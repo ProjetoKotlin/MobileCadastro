@@ -39,7 +39,7 @@ import com.cursoimpacta.mobilecadastro.ui.theme.MobileCadastroTheme
 
 
 class MainActivity : ComponentActivity() {
-    // dbHelper usada para interagir com o banco de dados.
+    // dbHelper -> usado para interagir com o banco de dados
     private lateinit var dbHelper: Database
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +57,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-// componente que eserá inicializado primeiro é a telaCadastro com os formularios a serem preenchido 
+// O componente que será inicializado primeiro é a TelaCadastro com os formularios a serem preenchidos
 @Composable
 fun TelaPrincipal(db: Database) {
     var imageBitmap by remember { mutableStateOf<Bitmap?>(null) }
@@ -73,7 +73,7 @@ fun TelaPrincipal(db: Database) {
         horizontalAlignment = Alignment.CenterHorizontally,
 
         ) {
-        //exibição do menu exibindo as duas opçãoes de clique a tela cadastro ou tela de buscarUsuario, as duas recebe db
+        // Exibição do Header com as duas opções de clique - tela cadastro ou tela de buscarUsuario, as duas funções recebem db
         Header(telaCadastro, onMudarTela = { telaCadastro = it })
         if (telaCadastro) {
             TelaCadastro(db, onBitmapCaptured)
@@ -192,11 +192,11 @@ fun TelaBuscarUsuario(db: Database, imageBitmap: Bitmap?, onBitmapCaptured: (Bit
          Em caso da procura de um nome que não foi cadastrado na base e do banco de dados. 
          Criamos essa função que resgata o retorno do banco de dados informando com a tratativa de mensagem "Não encontrado". 
          Ela evita disparo da  tela completa do perfil do usuario, e exibindo assim a mensagem de não encontrato 
-         e o campo de busca para tentar novamente buscar informação com outro nome
+         e o campo de busca para tentar novamente buscar a informação com outro nome
          
          Caso ao contrario ele entra no if e exibe o perfil do usuario com o dados que foram 
-         pesquisado no campo de busca, dessa forma ele será possivél editar ou deletar
-         o dados quando quiser.
+         pesquisados no campo de busca, dessa forma será possivel editar ou deletar
+         os dados quando quiser.
     */
     
     if (btnBuscarClicked) {
@@ -223,7 +223,7 @@ fun TelaBuscarUsuario(db: Database, imageBitmap: Bitmap?, onBitmapCaptured: (Bit
                             bitmap = bitmap.asImageBitmap(),
                             contentDescription = "Captured image",
                             modifier = Modifier
-                                .size(300.dp),  // Ajuste a altura conforme necessário
+                                .size(300.dp),  // Ajuste do tamanho da imagem
                             contentScale = ContentScale.FillWidth
                         )
                     }
@@ -259,25 +259,3 @@ fun TelaBuscarUsuario(db: Database, imageBitmap: Bitmap?, onBitmapCaptured: (Bit
         }
     }
 }
-
-// função para somente exibir os dados como texto na tela de perfil do usuario
-@Composable
-fun ExibirDados(dados: DadosPessoais, endereco: Endereco) {
-    val dadosTexto = """
-        Nome: ${dados.nome}
-        Email: ${dados.email}
-        CEP: ${dados.cep}
-        Telefone: ${dados.telefone}
-        Número: ${dados.numero}
-        Complemento: ${dados.complemento}
-        
-        Logradouro: ${endereco.logradouro}
-        Bairro: ${endereco.bairro}
-        Localidade: ${endereco.localidade}
-        UF: ${endereco.uf}
-        DDD: ${endereco.ddd}
-    """.trimIndent()
-
-    Text(text = dadosTexto, modifier = Modifier.width(310.dp))
-}
-

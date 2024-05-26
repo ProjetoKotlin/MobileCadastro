@@ -32,6 +32,8 @@ import java.io.IOException
 
 @Composable
 fun Camera(onBitmapValor: (Bitmap?) -> Unit) {
+    // Nessa função estamos incluindo a possibilidade do usuário capturar uma imagem com a câmera
+    // ou selecionar uma imagem da galeria
     var imageBitmap by remember { mutableStateOf<Bitmap?>(null) }
     val context = LocalContext.current
     val contentResolver = context.contentResolver
@@ -69,6 +71,7 @@ fun Camera(onBitmapValor: (Bitmap?) -> Unit) {
             Text("Select from Gallery")
         }
         Spacer(modifier = Modifier.height(16.dp))
+        // Aqui exibe a imagem selecionada
         if (imageBitmap != null) {
             imageBitmap?.let { bitmap ->
                 Image(
