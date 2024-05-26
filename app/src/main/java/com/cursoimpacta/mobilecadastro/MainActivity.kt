@@ -75,6 +75,7 @@ fun TelaPrincipal(db: Database) {
         ) {
         // Exibição do Header com as duas opções de clique - tela cadastro ou tela de buscarUsuario, as duas funções recebem db
         Header(telaCadastro, onMudarTela = { telaCadastro = it })
+
         if (telaCadastro) {
             TelaCadastro(db, onBitmapCaptured)
 
@@ -84,7 +85,6 @@ fun TelaPrincipal(db: Database) {
     }
 }
 
-
 @Composable
 fun TelaCadastro(db: Database, onBitmapCaptured: (Bitmap?) -> Unit) {
     var dados by remember {
@@ -93,44 +93,43 @@ fun TelaCadastro(db: Database, onBitmapCaptured: (Bitmap?) -> Unit) {
     var btnCadastrarClicked by remember {
         mutableStateOf(false)
     }
-    var imageBitmap by remember { mutableStateOf<Bitmap?>(null) }
     var infoCep by remember { mutableStateOf(Endereco("", "", "", "", "", false)) }
+
+    // Variável auxiliar para mostrar a imagem capturada
+    var imageBitmapToShow by remember { mutableStateOf<Bitmap?>(null) }
 
     Spacer(modifier = Modifier.height(30.dp))
 
     Camera(onBitmapValor = { bitmap ->
-        onBitmapCaptured(bitmap) // Chama a função callback para passar o bitmap capturado
-        imageBitmap = bitmap // Atualiza a imagemBitmap localmente
+        onBitmapCaptured(bitmap)
+        imageBitmapToShow = bitmap  // Atualiza a imagem para ser mostrada
     })
 
-    if (imageBitmap != null) {
-        imageBitmap?.let { bitmap ->
-            Image(
-                bitmap = bitmap.asImageBitmap(),
-                contentDescription = "Captured image",
-                modifier = Modifier
-                    .size(300.dp),
-            )
-        }
+    if (imageBitmapToShow != null) {
+        Image(
+            bitmap = imageBitmapToShow!!.asImageBitmap(),
+            contentDescription = "Captured image",
+            modifier = Modifier
+                .size(300.dp),
+        )
         Spacer(modifier = Modifier.height(20.dp))
     }
-    Formulario(dados = dados,
+
+    Formulario(
+        dados = dados,
         onDadosChange = { dados = it },
         infoCep = infoCep,
-        onInfoCepChange = { infoCep = it })
-    /*
-     botõao exibido ele adicona os dados que foi gerado e após os dados
-     salvos os campos recebe uma string vazia, para limpar os campos
-     e permitindo assim o preenchimento de novas informações.
-    */
+        onInfoCepChange = { infoCep = it }
+    )
+
     Button(
         onClick = {
             db.addUser(dados, infoCep)
-            dados = DadosPessoais("","","","9","","")
+            dados = DadosPessoais("", "", "", "9", "", "")
             infoCep = Endereco("", "", "", "", "", false)
-            onBitmapCaptured(null)
-            imageBitmap = null
             btnCadastrarClicked = true
+            // Limpar a imagem capturada após o cadastro
+            imageBitmapToShow = null  // Limpa a imagem exibida
         },
         modifier = Modifier
             .width(280.dp),
@@ -140,32 +139,28 @@ fun TelaCadastro(db: Database, onBitmapCaptured: (Bitmap?) -> Unit) {
         Text(text = "CADASTRAR")
     }
 
-    // mensagem de sucesso em caso de cadastro realizado com sucesso
-    if (btnCadastrarClicked){
+    // Mensagem de sucesso em caso de cadastro realizado com sucesso
+    if (btnCadastrarClicked) {
         Spacer(modifier = Modifier.height(20.dp))
         Text(text = "Dados cadastrados com sucesso!")
     }
     Spacer(modifier = Modifier.height(40.dp))
 }
 
+
 @Composable
 fun TelaBuscarUsuario(db: Database, imageBitmap: Bitmap?, onBitmapCaptured: (Bitmap?) -> Unit) {
     var dados by remember { mutableStateOf(DadosPessoais("", "", "", "9", "", "")) }
     var infoCep by remember { mutableStateOf(Endereco("", "", "", "", "", false)) }
-    var entrada by remember {
-        mutableStateOf("")
-    }
-    var btnBuscarClicked by remember {
-        mutableStateOf(false)
-    }
+    var entrada by remember { mutableStateOf("") }
+    var btnBuscarClicked by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
             .background(color = Color(0xFFD1E0F2))
             .width(310.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-
-        ) {
+    ) {
         Spacer(modifier = Modifier.height(24.dp))
         Text(
             text = "Buscar usuário:", fontSize = 18.sp, modifier = Modifier
@@ -205,16 +200,16 @@ fun TelaBuscarUsuario(db: Database, imageBitmap: Bitmap?, onBitmapCaptured: (Bit
     Spacer(modifier = Modifier.height(30.dp))
 
     /*
-         Em caso da procura de um nome que não foi cadastrado na base e do banco de dados. 
-         Criamos essa função que resgata o retorno do banco de dados informando com a tratativa de mensagem "Não encontrado". 
-         Ela evita disparo da  tela completa do perfil do usuario, e exibindo assim a mensagem de não encontrato 
+         Em caso da procura de um nome que não foi cadastrado na base e do banco de dados.
+         Criamos essa função que resgata o retorno do banco de dados informando com a tratativa de mensagem "Não encontrado".
+         Ela evita disparo da  tela completa do perfil do usuario, e exibindo assim a mensagem de não encontrato
          e o campo de busca para tentar novamente buscar a informação com outro nome
-         
-         Caso ao contrario ele entra no if e exibe o perfil do usuario com o dados que foram 
+
+         Caso ao contrario ele entra no if e exibe o perfil do usuario com os dados que foram
          pesquisados no campo de busca, dessa forma será possivel editar ou deletar
          os dados quando quiser.
     */
-    
+
     if (btnBuscarClicked) {
         if (dados.nome != "Não encontrado") {
             var btnAlterarClicked by remember {
@@ -234,9 +229,9 @@ fun TelaBuscarUsuario(db: Database, imageBitmap: Bitmap?, onBitmapCaptured: (Bit
                 Text(text = "Dados deletados com sucesso!")
             } else {
                 if (!btnAlterarClicked) {
-                    imageBitmap?.let { bitmap ->
+                    if (imageBitmap != null) {
                         Image(
-                            bitmap = bitmap.asImageBitmap(),
+                            bitmap = imageBitmap.asImageBitmap(),
                             contentDescription = "Captured image",
                             modifier = Modifier
                                 .size(300.dp),  // Ajuste do tamanho da imagem
@@ -247,8 +242,17 @@ fun TelaBuscarUsuario(db: Database, imageBitmap: Bitmap?, onBitmapCaptured: (Bit
                     ExibirDados(dados, infoCep)
                 } else {
                     Camera(onBitmapValor = { bitmap ->
-                        onBitmapCaptured(bitmap) // Chama a função callback para passar o bitmap capturado
+                        onBitmapCaptured(bitmap)
                     })
+                    if (imageBitmap != null) {
+                        Image(
+                            bitmap = imageBitmap.asImageBitmap(),
+                            contentDescription = "Captured image",
+                            modifier = Modifier
+                                .size(300.dp),
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
+                    }
                     Formulario(
                         dados = dados,
                         onDadosChange = { dados = it },

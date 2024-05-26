@@ -80,4 +80,5 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.3.1")
     implementation("com.google.accompanist:accompanist-permissions:0.24.5-alpha")
 
+    implementation("com.google.accompanist:accompanist-permissions:<latest-version>")
 }
