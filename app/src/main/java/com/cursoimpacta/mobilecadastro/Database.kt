@@ -4,6 +4,11 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 
 data class DadosPessoais(
     var nome: String,
@@ -23,6 +28,7 @@ data class Endereco(
     val erro: Boolean
 )
 
+// Criação do banco de dados e dos métodos CRUD
 class Database(context: Context) :
     SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
     companion object {
@@ -102,8 +108,7 @@ class Database(context: Context) :
             val cep = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CEP)) ?: ""
             val telefone = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_TELEFONE)) ?: ""
             val numero = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_NUMERO)) ?: ""
-            val complemento =
-                cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_COMPLEMENTO)) ?: ""
+            val complemento = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_COMPLEMENTO)) ?: ""
 
             val logradouro = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_LOGRADOURO)) ?: ""
             val bairro = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_BAIRRO)) ?: ""
@@ -161,4 +166,25 @@ class Database(context: Context) :
         )
         db.close()
     }
+}
+
+// Função para somente exibir os dados como texto na tela de perfil do usuário
+@Composable
+fun ExibirDados(dados: DadosPessoais, endereco: Endereco) {
+    val dadosTexto = """
+        Nome: ${dados.nome}
+        Email: ${dados.email}
+        CEP: ${dados.cep}
+        Telefone: ${dados.telefone}
+        Número: ${dados.numero}
+        Complemento: ${dados.complemento}
+        
+        Logradouro: ${endereco.logradouro}
+        Bairro: ${endereco.bairro}
+        Localidade: ${endereco.localidade}
+        UF: ${endereco.uf}
+        DDD: ${endereco.ddd}
+    """.trimIndent()
+
+    Text(text = dadosTexto, modifier = Modifier.width(310.dp))
 }

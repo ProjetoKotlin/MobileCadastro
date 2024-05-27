@@ -18,6 +18,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
+// Criação do Header com os botões de Cadastro e Buscar Usuário
 @Composable
 fun Header(
     telaCadastro: Boolean,
